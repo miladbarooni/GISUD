@@ -34,6 +34,7 @@ private:
 	const int nameWidth = 30;
 	// With of column value in the output
 	const int numWidth = 10;
+	
 	// Gap when to stop
 	double gap = 0.01;
 

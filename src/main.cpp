@@ -18,20 +18,30 @@
 int main(int argc, char* argv[])
 {
     std::string path = argv[1];
-    char* cplex = argv[2];
-    if(strcmp(cplex, "0") == 0) {
-        char* rc = argv[3];
-        //char* dis = argv[4];
-        char* compete = argv[4];
-        ISUD_Base problem = generateProblemFromMps(path + "/columns.txt", path + "/rhs.txt", path + "/initial.txt",
+
+    bool cplex = strcmp(argv[2], "1")==0;
+
+    ISUD_Base problem = generateProblemFromMps(path + "/columns.txt", path + "/rhs.txt", path + "/initial.txt",
                         path + "/fixed_cost.txt");
-        ISUD isud(&problem, strcmp(rc, "1") == 0, false, strcmp(compete, "1") == 0);
+
+    // Solve using GISUD    
+    if(! cplex) {
+
+        // Whether to use the column addition strategy in GISUD
+        bool colAdd = strcmp(argv[3], "1")==0;
+        // Whether to enable the "competition mode". In this mode, 
+        // the algorithm follows the addition strategy path but zoom is called
+        // each time the column addition strategy
+        bool compete = strcmp(argv[4], "1") == 0;
+
+        ISUD isud(&problem, colAdd, false, compete);
         std::vector<int> initialSolution = isud.getCurrentSolution();
         isud.solve(path);
         problem.destroyColumns();
-    } else {
-      ISUD_Base problem = generateProblemFromMps(path + "/columns.txt", path + "/rhs.txt","",
-                        path + "/fixed_cost.txt");
+    } 
+    // Solve using CPLEX
+    else {
+
         ISUD isud(&problem, false, false, true);
         std::vector<int> initialSolution = isud.getCurrentSolution();
         CplexMIP cplex(&problem);
