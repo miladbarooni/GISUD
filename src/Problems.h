@@ -8,10 +8,6 @@
 #include "CplexMIP.h"
 #include "ISUD.h"
 
-// Generate all instances
-void generateProblems();
-
-
 // Construct ISUD_Base from paths
 // "mps_file" is the mps_file path
 // Compute initial solution for problem "problem"
