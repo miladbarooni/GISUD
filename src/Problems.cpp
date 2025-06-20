@@ -13,7 +13,7 @@ ISUD_Base generateProblemFromMps(std::string mps_file, std::string rhs_file, std
     std::string nRowsS, nColsS;
     file >> nRowsS;
     file >> nColsS;
-    std::cout << nRowsS << " " << nColsS << std::endl;
+    std::cout << nRowsS << " rows, " << nColsS <<" columns"<< std::endl;
     int nRows = std::stoi(nRowsS);
     std::vector<std::string> tasks;
     std::vector<int> rhs;

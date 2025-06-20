@@ -10,6 +10,12 @@ private:
 	// Vector of activeConstraints in the RP
 	std::vector <std::string> activeConstraints_;
 
+	//verbose level : 
+	// 0 : No prints
+	// 1 : prints base info on RP
+	// 2 : debug mode
+	int verboseLevel = 1;
+
 public:
 	// Constructor of reduced problem
 	// "psolutionMethod" is a pointer on the problem

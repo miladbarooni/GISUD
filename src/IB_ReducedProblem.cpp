@@ -29,6 +29,9 @@ std::vector<size_t> sort_indexes(const std::vector<T>& v) {
 // "previous_solution" contains previous solution cost
 // "max_size" is the max size of RP
 double IB_ReducedProblem::solveProblem(std::vector<int>& currentSolution, std::vector<int>* newSolution, double previous_solution, int max_size) {
+
+	if(verboseLevel>=1){std::cout<<"  Solving RP"<<std::endl;}
+
 	//Construction du probl�me
 	IloEnv env;
 	IloModel mod(env);
@@ -55,9 +58,10 @@ double IB_ReducedProblem::solveProblem(std::vector<int>& currentSolution, std::v
 
 
 
-	// D�finition des contraintes
+	// Definition des contraintes
 	IloRangeArray constraints(env, activeConstraints_.size(),  0, 0);
-	std::cout << activeConstraints_.size() << " " << constraintsIds.size() << " contraintes" << std::endl;
+	
+	if(verboseLevel>=2){std::cout << activeConstraints_.size() << " " << constraintsIds.size() << " contraintes" << std::endl;}
 
 	for (int i = 0; i < activeConstraints_.size(); i++) {
 		constraints[i].setBounds(psolutionMethod_->rhs_[constraintsIds[i]], psolutionMethod_->rhs_[constraintsIds[i]]);
@@ -100,7 +104,8 @@ double IB_ReducedProblem::solveProblem(std::vector<int>& currentSolution, std::v
 		}
 	}
 	
-	std::cout << vars.getSize() << " variables" << std::endl;
+	if(verboseLevel>=2){std::cout << vars.getSize() << " variables" << std::endl;}
+
 	// R�solution du probl�me
 	IloCplex cplex(mod);
 	cplex.setParam(IloCplex::Param::Simplex::Display, 0);
@@ -172,7 +177,7 @@ double IB_ReducedProblem::getDuals(std::vector<double>* duals) {
 
 	// D�finition des contraintes
 	IloRangeArray constraints(env, activeConstraints_.size(), 0, 0);
-	std::cout << activeConstraints_.size() << " " << constraintsIds.size() << " contraintes" << std::endl;
+	// std::cout << activeConstraints_.size() << " " << constraintsIds.size() << " contraintes" << std::endl;
 
 	for (int i = 0; i < activeConstraints_.size(); i++) {
 		constraints[i].setBounds(psolutionMethod_->rhs_[constraintsIds[i]], psolutionMethod_->rhs_[constraintsIds[i]]);

@@ -698,6 +698,9 @@ bool ISUD::zoom(int isudPhase, std::vector<double> &solution, std::vector<int> *
 			int rpPhase = 0;
 			while (solveAgainrp)
 			{
+				std::cout<<"rp max size : "<< rp_max_size<<std::endl;
+				
+
 				std::vector<std::string> ac = compatibilityChecker.getActiveConstraints();
 				// std::vector<std::string> ac = psolutionMethod_->tasks_;
 				IB_ReducedProblem rp(psolutionMethod_, ac);
@@ -762,7 +765,6 @@ bool ISUD::zoom(int isudPhase, std::vector<double> &solution, std::vector<int> *
 					{
 						rpPhase = 0;
 						rp_max_size = psolutionMethod_->columns_.size() * 100 / 100;
-						//gapValue = 0.005;
 						solveAgainrp = true;
 					}
 					else
