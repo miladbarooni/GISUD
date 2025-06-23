@@ -44,6 +44,11 @@ private:
 	void writeTraceHeader();
 
 
+	// Algo progression
+	bool skipPhase;
+	bool solved;
+
+
 public:
 	// Return current solution
 	std::vector<int> getCurrentSolution() {

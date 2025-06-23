@@ -1211,6 +1211,8 @@ void ISUD::addCompeteRow(double amelioration_rc, int time_rc, double amelioratio
 }
 
 void ISUD::writeTraceHeader(){
+
+	std::cout<<"final path "<<final_path<<std::endl;
 	file.open(final_path);
 	if (compete)
 	{
@@ -1244,7 +1246,7 @@ void ISUD::solve(std::string path)
 	std::cout << psolutionMethod_->columns_.size() << " columns." << std::endl;
 	std::cout << psolutionMethod_->tasks_.size() << " tasks." << std::endl;
 
-
+	writeTraceHeader();
 
 	IB_CompatibilityChecker ib(psolutionMethod_);
 
@@ -1311,12 +1313,12 @@ void ISUD::solve(std::string path)
 	std::cout << "Incompatibility degrees computed." << std::endl;
 
 	// On commence les it�rations
-	bool solved = false;
+	solved = false;
 	int n_iterations = 0;
 	int n_added_columns = 0;
 	int n_success_add_columns = 0;
 
-	bool skipPhase = false;
+	skipPhase = false;
 	int previousPhaseMax = -1;
 	while (!solved)
 	{
