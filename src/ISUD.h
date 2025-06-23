@@ -37,6 +37,13 @@ private:
 	// Gap when to stop
 	double gap = 0.01;
 
+	//trace file
+	std::string final_path; 
+	std::string compete_out_filename;
+
+	void writeTraceHeader();
+
+
 public:
 	// Return current solution
 	std::vector<int> getCurrentSolution() {
@@ -59,7 +66,7 @@ public:
 	// "checkBinaryCompatibility" is a boolean that is true if we want to check the exact binary compatibility of columns
 	// "compete" is a boolean that is true if we want to compare column addition strategy and ZOOM
 
-	ISUD(ISUD_Base* problem, bool addColumns, bool checkBinaryCompatibility, bool compete_);
+	ISUD(ISUD_Base* problem, std::string path, bool addColumns, bool checkBinaryCompatibility, bool compete_);
 
 	// Return binary compatible column of negative reduced cost
 	// Return "colsIn" and "colsOut"

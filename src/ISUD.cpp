@@ -72,8 +72,27 @@ void computeIncompatibilityDegreesByThreads(ISUD_Base* psolutionMethod_, std::ve
 // "checkBinaryCompatibility" is a boolean that is true if we want to check the exact binary compatibility of columns
 // "compete" is a boolean that is true if we want to compare column addition strategy and ZOOM
 
-ISUD::ISUD(ISUD_Base *problem, bool addColumns, bool checkBinaryCompatibility, bool compete_) : psolutionMethod_(problem), bcompatibilityChecker_(problem), addColumns_(addColumns), checkBinaryCompatibility_(checkBinaryCompatibility), compete(compete_)
+ISUD::ISUD(ISUD_Base *problem, std::string path, bool addColumns, bool checkBinaryCompatibility, bool compete_) : psolutionMethod_(problem), bcompatibilityChecker_(problem), addColumns_(addColumns), checkBinaryCompatibility_(checkBinaryCompatibility), compete(compete_)
 {
+
+		//output file
+	if (addColumns_)
+	{
+		if (compete)
+		{
+			final_path = path + "/sortie_isud_compete.txt";
+			compete_out_filename = path + (addColumns_ ? "/competition.txt" : "/competition_dis.txt");
+		}
+		else
+		{
+			final_path = path + "/sortie_isud.txt";
+		}
+	}
+	else
+	{
+		final_path = path + "/sortie_zoom.txt";
+	}
+
 	currentCost_ = problem->fixed_cost_;
 	for (int i = 0; i < problem->columns_.size(); i++)
 	{
@@ -1191,32 +1210,11 @@ void ISUD::addCompeteRow(double amelioration_rc, int time_rc, double amelioratio
 	fileC << std::endl;
 }
 
-// Main procedure of ISUD, solve the problem and stock the output to "path"
-void ISUD::solve(std::string path)
-{
-	std::cout << psolutionMethod_->columns_.size() << " columns." << std::endl;
-	std::cout << psolutionMethod_->tasks_.size() << " tasks." << std::endl;
-	std::string final_path = "";
-	if (addColumns_)
-	{
-		if (compete)
-		{
-			final_path = path + "/sortie_isud_compete.txt";
-		}
-		else
-		{
-			final_path = path + "/sortie_isud.txt";
-		}
-	}
-	else
-	{
-		final_path = path + "/sortie_zoom.txt";
-	}
-
-	file.open(path != "" ? final_path : "sortie.txt");
+void ISUD::writeTraceHeader(){
+	file.open(final_path);
 	if (compete)
 	{
-		fileC.open(path + (addColumns_ ? "/competition.txt" : "/competition_dis.txt"));
+		fileC.open(compete_out_filename);
 		fileC << std::left << std::setw(nameWidth) << std::setfill(separator) << "Current Cost";
 		fileC << std::left << std::setw(nameWidth) << std::setfill(separator) << "RC improvment";
 		fileC << std::left << std::setw(nameWidth) << std::setfill(separator) << "RC time";
@@ -1238,6 +1236,15 @@ void ISUD::solve(std::string path)
 	file << std::left << std::setw(nameWidth) << std::setfill(separator) << "Column addition strategy";
 	file << std::left << std::setw(nameWidth) << std::setfill(separator) << "Column addition rate";
 	file << std::endl;
+}
+
+// Main procedure of ISUD, solve the problem and stock the output to "path"
+void ISUD::solve(std::string path)
+{
+	std::cout << psolutionMethod_->columns_.size() << " columns." << std::endl;
+	std::cout << psolutionMethod_->tasks_.size() << " tasks." << std::endl;
+
+
 
 	IB_CompatibilityChecker ib(psolutionMethod_);
 

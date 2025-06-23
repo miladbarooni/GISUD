@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
         // each time the column addition strategy
         bool compete = strcmp(argv[4], "1") == 0;
 
-        ISUD isud(&problem, colAdd, false, compete);
+        ISUD isud(&problem, path, colAdd, false, compete);
         std::vector<int> initialSolution = isud.getCurrentSolution();
         isud.solve(path);
         problem.destroyColumns();
@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
     // Solve using CPLEX
     else {
 
-        ISUD isud(&problem, false, false, true);
+        ISUD isud(&problem,path, false, false, true);
         std::vector<int> initialSolution = isud.getCurrentSolution();
         CplexMIP cplex(&problem);
         std::vector<int> solution;
