@@ -14,7 +14,7 @@ private:
 	// 0 : No prints
 	// 1 : prints base info on RP
 	// 2 : debug mode
-	int verboseLevel = 1;
+	int verboseLevel = 2;
 
 public:
 	// Constructor of reduced problem

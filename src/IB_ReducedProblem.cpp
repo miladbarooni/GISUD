@@ -51,6 +51,8 @@ double IB_ReducedProblem::solveProblem(std::vector<int>& currentSolution, std::v
 		}
 	}
 
+	std::cout<<"  "<<activeConstraints_.size()<<" contraintes actives"<<std::endl;
+
 	std::map<std::string, int> tasksIndexes;
 	for (int i = 0; i < activeConstraints_.size(); i++) {
 		tasksIndexes[activeConstraints_[i]] = i;
@@ -99,12 +101,13 @@ double IB_ReducedProblem::solveProblem(std::vector<int>& currentSolution, std::v
 			n_columns += 1;
 
 			if (n_columns >= max_size) {
+				std::cout<<"il y a max_size = "<<max_size<<" colonnes"<<std::endl;
 				break;
 			}
 		}
 	}
 	
-	if(verboseLevel>=2){std::cout << vars.getSize() << " variables" << std::endl;}
+	if(verboseLevel>=2){std::cout << vars.getSize() << " variables in RP" << std::endl;}
 
 	// R�solution du probl�me
 	IloCplex cplex(mod);

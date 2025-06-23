@@ -774,6 +774,7 @@ bool ISUD::zoom(int isudPhase, std::vector<double> &solution, std::vector<int> *
 					}
 					std::cout << "Same solution." << std::endl;
 
+					solveAgainrp = false;
 					if (!solveAgainrp)
 					{
 						rp.getDuals(&dualVariables);
