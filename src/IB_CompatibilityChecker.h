@@ -38,6 +38,8 @@ private:
     Eigen::VectorXf randomVector;
     Eigen::MatrixXf theMatrix;
 
+
+
 public:
     // Constructor
     IB_CompatibilityChecker(ISUD_Base *psolutionMethod)

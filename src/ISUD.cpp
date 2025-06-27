@@ -416,13 +416,13 @@ void ISUD::pivotColumnsInSolution(std::vector<int> &colsIn, std::vector<int> &co
 	std::set<std::string> coveredTasks;
 
 	if(verbose_level >=1){
-		std::cout<<"    Performing pivot"<<std::endl;
+		std::cout<<"      Performing pivot"<<std::endl;
 	}
 	
 	for (int colId : colsIn)
 	{
 		if(verbose_level>=2){	
-			std::cout << "      Pivoting in : " << colId << std::endl;
+			std::cout << "        Pivoting in : " << colId << std::endl;
 		}
 		IB_Column *column = psolutionMethod_->columns_[colId];
 		column->setInCurrentSolution();
@@ -440,7 +440,7 @@ void ISUD::pivotColumnsInSolution(std::vector<int> &colsIn, std::vector<int> &co
 	for (int colId : colsOut)
 	{
 		if(verbose_level>=2){	
-			std::cout << "      Pivoting out : " << colId << std::endl;
+			std::cout << "        Pivoting out : " << colId << std::endl;
 		}
 		IB_Column *column = psolutionMethod_->columns_[colId];
 		column->setOutCurrentSolution();
@@ -468,7 +468,7 @@ void ISUD::pivotColumnsInSolution(std::vector<int> &colsIn, std::vector<int> &co
 
 	currentCost_ = cost;
 	if(verbose_level>=1){	
-		std::cout << "    New cost : " << currentCost_ << std::endl;
+		std::cout << "      New cost : " << currentCost_ << std::endl;
 
 	}
 	// On recalcule les compatibilit�s binaires des colonnes
@@ -1359,7 +1359,7 @@ void ISUD::solve(std::string path)
 				failed = !getBCompatibleColumn(&colsIn, &colsOut);
 				if (!failed)
 				{
-					if(verbose_level>=2){std::cout << "    Binary compatible column found." << std::endl;}
+					if(verbose_level>=2){std::cout << "    RP : Binary compatible column found." << std::endl;}
 					pivotColumnsInSolution(colsIn, colsOut);
 
 					colsIn.clear();
@@ -1381,7 +1381,7 @@ void ISUD::solve(std::string path)
 					if (!failed)
 					{
 						has_compatible_column = true;
-						if(verbose_level>=2){std::cout << "    Binary compatible column found." << std::endl;}
+						if(verbose_level>=2){std::cout << "    RP : Binary compatible column found." << std::endl;}
 						pivotColumnsInSolution(colsIn, colsOut, false);
 
 						colsIn.clear();

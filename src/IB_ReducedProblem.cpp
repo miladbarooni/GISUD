@@ -30,7 +30,7 @@ std::vector<size_t> sort_indexes(const std::vector<T>& v) {
 // "max_size" is the max size of RP
 double IB_ReducedProblem::solveProblem(std::vector<int>& currentSolution, std::vector<int>* newSolution, double previous_solution, int max_size) {
 
-	if(verboseLevel>=1){std::cout<<"  Solving RP"<<std::endl;}
+	if(verbose_level>=1){std::cout<<"    Solving RP"<<std::endl;}
 
 	//Construction du probl�me
 	IloEnv env;
@@ -63,7 +63,7 @@ double IB_ReducedProblem::solveProblem(std::vector<int>& currentSolution, std::v
 	// Definition des contraintes
 	IloRangeArray constraints(env, activeConstraints_.size(),  0, 0);
 	
-	if(verboseLevel>=2){std::cout << activeConstraints_.size() << " " << constraintsIds.size() << " contraintes" << std::endl;}
+	if(verbose_level>=2){std::cout << activeConstraints_.size() << " " << constraintsIds.size() << " contraintes" << std::endl;}
 
 	for (int i = 0; i < activeConstraints_.size(); i++) {
 		constraints[i].setBounds(psolutionMethod_->rhs_[constraintsIds[i]], psolutionMethod_->rhs_[constraintsIds[i]]);
@@ -101,13 +101,15 @@ double IB_ReducedProblem::solveProblem(std::vector<int>& currentSolution, std::v
 			n_columns += 1;
 
 			if (n_columns >= max_size) {
-				std::cout<<"il y a max_size = "<<max_size<<" colonnes"<<std::endl;
+				if(verbose_level>=2){
+					std::cout<<"      RCP : there are = "<<max_size<<" columns"<<std::endl;
+				}
 				break;
 			}
 		}
 	}
 	
-	if(verboseLevel>=2){std::cout << vars.getSize() << " variables in RP" << std::endl;}
+	if(verbose_level>=2){std::cout << vars.getSize() << " variables in RP" << std::endl;}
 
 	// R�solution du probl�me
 	IloCplex cplex(mod);
@@ -128,7 +130,7 @@ double IB_ReducedProblem::solveProblem(std::vector<int>& currentSolution, std::v
 	while (success) {
 		objective = cplex.getObjValue();
 		int nb_sols = cplex.getSolnPoolNsolns();
-		std::cout << nb_sols << " solutions." << std::endl;
+
 		if (nb_sols == current_number_of_solutions || nb_sols >= 15) {
 			IloNumArray vals(env);
 			cplex.getValues(vars, vals, 0);
@@ -178,9 +180,8 @@ double IB_ReducedProblem::getDuals(std::vector<double>* duals) {
 
 
 
-	// D�finition des contraintes
+	// Constraints
 	IloRangeArray constraints(env, activeConstraints_.size(), 0, 0);
-	// std::cout << activeConstraints_.size() << " " << constraintsIds.size() << " contraintes" << std::endl;
 
 	for (int i = 0; i < activeConstraints_.size(); i++) {
 		constraints[i].setBounds(psolutionMethod_->rhs_[constraintsIds[i]], psolutionMethod_->rhs_[constraintsIds[i]]);
@@ -217,7 +218,9 @@ double IB_ReducedProblem::getDuals(std::vector<double>* duals) {
 		}
 	}
 
-	std::cout << vars.getSize() << " variables" << std::endl;
+	if(verbose_level>=1){
+		std::cout <<"      "<< vars.getSize() << " variables" << std::endl;
+	}
 	// R�solution du probl�me
 	IloCplex cplex(mod);
 	cplex.setOut(env.getNullStream());
@@ -238,8 +241,6 @@ double IB_ReducedProblem::getDuals(std::vector<double>* duals) {
 	}
 
 	env.end();
-
-	std::cout << objective << " is the objective" << std::endl;
 
 	return objective;
 }

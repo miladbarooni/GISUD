@@ -18,6 +18,8 @@ private:
 	// Columns positive indices in the CP
 	std::set<int> activePColumns_;
 
+
+
 public:
 	//Constructor of reducedCP
 	// "psolutionMethod" is a pointer on the problem

@@ -61,7 +61,6 @@ void BCompatibilityChecker::init() {
 		}
 	}
 
-	std::cout << "subset calcules" << std::endl;
 
 	for (int i = 0; i < psolutionMethod_->columns_.size();i++) {
 		IB_Column* column = psolutionMethod_->columns_[i];
