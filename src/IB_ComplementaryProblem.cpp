@@ -33,7 +33,6 @@ void IB_ComplementaryProblem::constructProblem(bool increaseArtificialCost, doub
 		}
 	}
 
-	double M = penalization;
 
 	for (int i = 0; i < psolutionMethod_->columns_.size(); i++) {
 		IB_Column* column = psolutionMethod_->columns_[i];
@@ -155,8 +154,6 @@ double IB_ComplementaryProblem::solve(std::vector<double>* solution, std::vector
 					solution->push_back(0);
 				}
 
-				double common_value = 0;
-				bool integral = true;
 				for (int i = 0; i < vals.getSize(); i++) {
 					if (vals[i] > 1e-5 && vars[i].getUB() > 0) {
 						if (vals[i] > max_value) {

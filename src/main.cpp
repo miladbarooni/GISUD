@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
         CplexMIP cplex(&problem);
         std::vector<int> solution;
 
-        double objective = cplex.solve(initialSolution, &solution, false, path);
+        cplex.solve(initialSolution, &solution, false, path);
         problem.destroyColumns();
     }
 

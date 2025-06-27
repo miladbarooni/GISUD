@@ -43,24 +43,6 @@ bool IB_ReducedCP::solve(double currentValue, std::vector<double> dualVariables,
 		completeDualVariables[constraintsIds[activeConstraintsRP[i]]] = dualVariables[i];
 	}
 
-	/*
-	for (int i = 0; i < eigenVectors_.size(); i++) {
-		IloNumColumn col = cost(costs_[i]);
-		for (int j = 0; j < eigenVectors_[i]->size(); j++) {
-			if (eigenVectors_[i]->coeff(j) != 0) {
-				col += constraints[j](eigenVectors_[i]->coeff(j));
-			}
-		}
-
-
-		col += constraints[activeConstraints_.size()](1);
-		vars.add(IloNumVar(col, 0.0));
-		col.end();
-	}*/
-
-	
-	bool oneIncompatibleColumn = false;
-
 	
 
 	for (int i = 0; i < psolutionMethod_->columns_.size(); i++) {
@@ -91,9 +73,6 @@ bool IB_ReducedCP::solve(double currentValue, std::vector<double> dualVariables,
 
 			
 
-			if (!column->isInP() && column->getState() == IB_Column::STATE_INCOMPATIBLE) {
-				oneIncompatibleColumn = true;
-			}
 
 
 			if (column->isInPIndependent()) {
@@ -160,12 +139,6 @@ bool IB_ReducedCP::solve(double currentValue, std::vector<double> dualVariables,
 		int n2 = 0;
 		// Suppression des colonnes
 		for (int k = 0; k < vars.getSize(); k++) {
-			bool delete_ = false;
-			for (auto task : coveredTasks) {
-				if (psolutionMethod_->columns_[colsIndices[k]]->findContribution(task) > 1e-4) {
-					delete_ = true;
-				}
-			}
 
 			if (fabs(vals[k]) > 1e-5) {
 				vars[k].setBounds(0, 0);

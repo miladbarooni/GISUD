@@ -91,7 +91,6 @@ void IB_CompatibilityChecker::calcIndependentMatrix() {
     }
     
     // Extraction d'un ensemble de colonnes linéairement indépendant maximal
-    int matrix_size = 0;
     Eigen::SparseMatrix<float> current_matrix(psolutionMethod_->tasks_.size(), positiveColumns.size());
     std::vector<float> costs;
     std::vector<T> triplets;

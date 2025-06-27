@@ -119,11 +119,10 @@ double IB_ReducedProblem::solveProblem(std::vector<int>& currentSolution, std::v
 	cplex.setParam(IloCplex::Param::MIP::Limits::Solutions, 1);
 	cplex.setParam(IloCplex::Param::Preprocessing::Presolve, 0);
 
-	double objective;
+	double objective = 0;
 
 	bool success = cplex.solve();
 	int current_number_of_solutions = 0;
-	double po = 2*previous_solution;
 	while (success) {
 		objective = cplex.getObjValue();
 		int nb_sols = cplex.getSolnPoolNsolns();
@@ -144,7 +143,6 @@ double IB_ReducedProblem::solveProblem(std::vector<int>& currentSolution, std::v
 		else {
 			current_number_of_solutions = nb_sols;
 			cplex.solve();
-			po = objective;
 		}
 	}
 
@@ -227,7 +225,6 @@ double IB_ReducedProblem::getDuals(std::vector<double>* duals) {
 	double objective = 0;
 
 	bool success = cplex.solve();
-	int current_number_of_solutions = 0;
 	if(success) {
 		objective = cplex.getObjValue();
 		IloNumArray vals(env);			

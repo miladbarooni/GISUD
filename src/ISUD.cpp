@@ -730,7 +730,6 @@ bool ISUD::zoom(int isudPhase, std::vector<double> &solution, std::vector<int> *
 			std::vector<std::string> activeConstraints2 = compatibilityChecker.getActiveConstraints();
 			//double gapValue = 0.005;
 			int rp_max_size = psolutionMethod_->columns_.size() * 100 / 100;
-			int rpPhase = 0;
 			while (solveAgainrp)
 			{
 				
@@ -800,7 +799,6 @@ bool ISUD::zoom(int isudPhase, std::vector<double> &solution, std::vector<int> *
 				{
 					if (rp_normal_size <= rp_max_size)
 					{
-						rpPhase = 0;
 						rp_max_size = psolutionMethod_->columns_.size() * 100 / 100;
 						solveAgainrp = true;
 					}
@@ -1313,12 +1311,6 @@ void ISUD::solve(std::string path)
 
 	if(verbose_level>=1){std::cout << "Computation of columns incompatibility degree" << std::endl;}
 	std::vector<IB_Column *> columns_to_recompute = psolutionMethod_->columns_;
-	int n_threads = 8;
-
-	if (columns_to_recompute.size() <= 100)
-	{
-		n_threads = 1;
-	}
 
 	computeIncompatibilityDegreesByThreads(psolutionMethod_, columns_to_recompute, 8);
 
@@ -1341,7 +1333,6 @@ void ISUD::solve(std::string path)
 		bool columnAdded = false;
 		int pivot_distance = 1;
 		int n_added_columns_it = 1;
-		double last_objective = -10000;
 		auto iteration_start = std::chrono::high_resolution_clock::now();
 		std::vector<int> colsIn, colsOut;
 		// Pivotage des colonnes compatibles binaires jusqu'� que ce ne soit plus possible
@@ -1459,7 +1450,6 @@ void ISUD::solve(std::string path)
 				}
 			}
 			
-			last_objective = objective;
 			double gapValue = fabs(objective * psolutionMethod_->sum_bi) / currentCost_;
 			double gapValue2 = fabs(objective * pas) / (currentCost_ - bound);
 			if ((objective >= 0 || gapValue <= 0.005) && phaseSeq[i] == -1)
