@@ -42,8 +42,6 @@ void computeIncompatibilityDegreesByThreads(ISUD_Base* psolutionMethod_, std::ve
 	{
 		thread_tasks.push_back(current_vector);
 	}
-
-	std::cout << thread_tasks.size() << " is the threads size." << std::endl;
 	std::vector<IB_Column*> positiveColumns;
 	for (int i = 0; i < psolutionMethod_->columns_.size(); i++)
 	{
@@ -160,7 +158,6 @@ bool ISUD::searchSubDirection(std::vector<int> in_columns, std::vector<int> *out
 	for (int i = 0; i < in_columns.size(); i++)
 	{
 		IB_Column *column = psolutionMethod_->columns_[in_columns[i]];
-		std::cout << "in_column  : " << std::endl;
 		int sign = column->isInCurrentSolution() ? -1 : 1;
 		IloNumColumn col = cost(column->getCost() * sign);
 		for (int j = 0; j < n_tasks; j++)
@@ -179,7 +176,9 @@ bool ISUD::searchSubDirection(std::vector<int> in_columns, std::vector<int> *out
 		col.end();
 	}
 
-	std::cout << vars.getSize() << " variables in the subdirection problem." << std::endl;
+	if(verbose_level >= 2){
+		std::cout << vars.getSize() << "    variables in the subdirection problem." << std::endl;
+	}
 	// R�solution du probl�me
 	IloCplex cplex(mod);
 	cplex.setParam(IloCplex::Param::Threads, 1);
@@ -188,7 +187,16 @@ bool ISUD::searchSubDirection(std::vector<int> in_columns, std::vector<int> *out
 	cplex.setOut(env.getNullStream());
 
 	bool success = cplex.solve();
-	std::cout << (success ? cplex.getObjValue() : 0) << std::endl;
+	
+	if(verbose_level >=1){
+		if(success){
+			std::cout << "    subdirection problem value : "<<cplex.getObjValue() << std::endl;	
+		}
+		else{
+			std::cout<<"    subdirection problem failed"<<std::endl;
+		}
+	}
+	
 	if (!success || (cplex.getObjValue() >= -1e-4))
 	{
 		return false;
@@ -407,9 +415,15 @@ void ISUD::pivotColumnsInSolution(std::vector<int> &colsIn, std::vector<int> &co
 {
 	std::set<std::string> coveredTasks;
 
+	if(verbose_level >=1){
+		std::cout<<"    Performing pivot"<<std::endl;
+	}
+	
 	for (int colId : colsIn)
 	{
-		std::cout << "ColIn : " << colId << std::endl;
+		if(verbose_level>=2){	
+			std::cout << "      Pivoting in : " << colId << std::endl;
+		}
 		IB_Column *column = psolutionMethod_->columns_[colId];
 		column->setInCurrentSolution();
 		currentSolution_[colId] = 1;
@@ -425,7 +439,9 @@ void ISUD::pivotColumnsInSolution(std::vector<int> &colsIn, std::vector<int> &co
 
 	for (int colId : colsOut)
 	{
-		std::cout << "ColOut : " << colId << std::endl;
+		if(verbose_level>=2){	
+			std::cout << "      Pivoting out : " << colId << std::endl;
+		}
 		IB_Column *column = psolutionMethod_->columns_[colId];
 		column->setOutCurrentSolution();
 		column->setIncompatible();
@@ -451,9 +467,10 @@ void ISUD::pivotColumnsInSolution(std::vector<int> &colsIn, std::vector<int> &co
 	}
 
 	currentCost_ = cost;
+	if(verbose_level>=1){	
+		std::cout << "    New cost : " << currentCost_ << std::endl;
 
-	std::cout << "New cost : " << currentCost_ << std::endl;
-
+	}
 	// On recalcule les compatibilit�s binaires des colonnes
 	if (checkBinaryCompatibility_)
 	{
@@ -508,15 +525,15 @@ void ISUD::pivotColumnsInSolution(std::vector<int> &colsIn, std::vector<int> &co
 			}
 		}
 
-		std::cout << columnsToRecomputeCompatibility.size() << " columns for which we want to recompute binary compatibility." << std::endl;
 		for (auto colId : columnsToRecomputeCompatibility)
 		{
-			1 + 1;
 			bcompatibilityChecker_.updateCompatibilityStatus(colId);
 		}
 	}
 
-	std::cout << "Recomputation of incompatibility degrees." << std::endl;
+	if(verbose_level >=2){
+		std::cout << "    Recomputation of incompatibility degrees." << std::endl;
+	}
 	std::vector<IB_Column *> positiveColumns;
 	for (int i = 0; i < psolutionMethod_->columns_.size(); i++)
 	{
@@ -630,7 +647,9 @@ bool ISUD::zoom(int isudPhase, std::vector<double> &solution, std::vector<int> *
 {
 	std::vector<int> seqPhases = {isudPhase};
 	std::vector<int> rpPhases = {isudPhase};
-	std::cout << "ZOOM procedure" << std::endl;
+	if(verbose_level >=1){
+		std::cout << "  ZOOM procedure" << std::endl;
+	}
 	bool cpSuccess = true;
 	int n_iterations = 0;
 	for (int i = 0; i < psolutionMethod_->columns_.size(); i++)
@@ -647,7 +666,6 @@ bool ISUD::zoom(int isudPhase, std::vector<double> &solution, std::vector<int> *
 	}
 	while (cpSuccess)
 	{
-		std::cout << solution.size() << " is the solution size." << std::endl;
 		std::vector<double> incompatibleCosts;
 		std::vector<int> incompatibleColsIndices;
 		std::vector<Eigen::VectorXf> incompatibleVecs;
@@ -1274,21 +1292,21 @@ void ISUD::solve(std::string path)
 	// Initialisation de la compatibilit� binaire
 	if (checkBinaryCompatibility_)
 	{
-		std::cout << "Computation of columns binary compatibility : " << std::endl;
+		if(verbose_level>=1){std::cout << "Computation of columns binary compatibility : " << std::endl;}
 		bcompatibilityChecker_.init();
-		std::cout << "Columns binary compatibility computed." << std::endl;
+		if(verbose_level>=1){std::cout << "Columns binary compatibility computed." << std::endl;}
 	}
 
 	current_gap = 1;
 	auto global_start = std::chrono::high_resolution_clock::now();
-	std::cout << "Computation of the linear relaxation value." << std::endl;
+	if(verbose_level>=1){std::cout << "Computation of the linear relaxation value." << std::endl;}
 	std::vector<int> initialSolution = getCurrentSolution();
 	CplexMIP cplex(psolutionMethod_);
 	std::vector<int> solution;
 	double objective = cplex.solve(initialSolution, &solution, true);
 	bestBound = objective;
 	double bound = bestBound;
-	std::cout << "Lower bound : " << bound << std::endl;
+	if(verbose_level>=1){std::cout << "Lower bound : " << bound << std::endl;}
 	// Calcul des degr�s d'incompatibilit�s
 	std::vector<IB_Column *> positiveColumns;
 	for (int i = 0; i < psolutionMethod_->columns_.size(); i++)
@@ -1299,7 +1317,7 @@ void ISUD::solve(std::string path)
 		}
 	}
 
-	std::cout << "Computation of columns incompatibility degree" << std::endl;
+	if(verbose_level>=1){std::cout << "Computation of columns incompatibility degree" << std::endl;}
 	std::vector<IB_Column *> columns_to_recompute = psolutionMethod_->columns_;
 	int n_threads = 8;
 
@@ -1310,8 +1328,7 @@ void ISUD::solve(std::string path)
 
 	computeIncompatibilityDegreesByThreads(psolutionMethod_, columns_to_recompute, 8);
 
-	std::cout << "Incompatibility degrees computed." << std::endl;
-
+	
 	// On commence les it�rations
 	solved = false;
 	int n_iterations = 0;
@@ -1322,6 +1339,9 @@ void ISUD::solve(std::string path)
 	int previousPhaseMax = -1;
 	while (!solved)
 	{
+		if(verbose_level>=1){
+			std::cout<<"Iteration "<<n_iterations<<std::endl;
+		}
 		bool has_zoom = false;
 		int phaseMax = -1;
 		bool columnAdded = false;
@@ -1339,7 +1359,7 @@ void ISUD::solve(std::string path)
 				failed = !getBCompatibleColumn(&colsIn, &colsOut);
 				if (!failed)
 				{
-					std::cout << "Binary compatible column found." << std::endl;
+					if(verbose_level>=2){std::cout << "    Binary compatible column found." << std::endl;}
 					pivotColumnsInSolution(colsIn, colsOut);
 
 					colsIn.clear();
@@ -1361,7 +1381,7 @@ void ISUD::solve(std::string path)
 					if (!failed)
 					{
 						has_compatible_column = true;
-						std::cout << "Binary compatible column found." << std::endl;
+						if(verbose_level>=2){std::cout << "    Binary compatible column found." << std::endl;}
 						pivotColumnsInSolution(colsIn, colsOut, false);
 
 						colsIn.clear();
@@ -1427,7 +1447,7 @@ void ISUD::solve(std::string path)
 				continue;
 			}
 			phaseMax = phaseSeq[i];
-			std::cout << "Solving of CP in phase : " << phaseSeq[i] << std::endl;
+			std::cout << "    Solving of CP in phase : " << phaseSeq[i] << std::endl;
 			solution.clear();
 			
 			IB_ComplementaryProblem cp(psolutionMethod_, phaseSeq[0]);
@@ -1449,7 +1469,7 @@ void ISUD::solve(std::string path)
 			std::cout << gapValue << std::endl;
 			if ((objective >= 0 || gapValue <= 0.005) && phaseSeq[i] == -1)
 			{
-				std::cout << "Failure of CP in phase -1" << std::endl;
+				std::cout << "    Failure of CP in phase -1" << std::endl;
 				solved = true;
 				cp.destroy();
 				return;
@@ -1457,7 +1477,7 @@ void ISUD::solve(std::string path)
 
 			if (phaseSeq[i] != -1 && (objective >= 0 || gapValue2 <= 0.006))
 			{
-				std::cout << "Failure of CP" << std::endl;
+				std::cout << "    Failure of CP" << std::endl;
 
 				cp.destroy();
 				continue;
@@ -1470,7 +1490,7 @@ void ISUD::solve(std::string path)
 				integral = true;
 				while (objective <= 0 && gapValue2 >= 0.006 && isIntegral(solution))
 				{
-					std::cout << "Integral direction found." << std::endl;
+					std::cout << "    Integral direction found." << std::endl;
 
 					for (int i = 0; i < psolutionMethod_->columns_.size(); i++)
 					{

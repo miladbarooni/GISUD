@@ -47,6 +47,14 @@ private:
 	// Algo progression
 	bool skipPhase;
 	bool solved;
+	
+	
+	//verbose level
+	// 0 no print
+	// 1 basic info
+	// 2 detailed info
+	//
+	int verbose_level = 2;
 
 
 public:
