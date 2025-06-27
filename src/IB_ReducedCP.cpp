@@ -11,7 +11,7 @@
 // "n_calls" is the number of calls to CP
 // "phase" is the phase of the CP
 bool IB_ReducedCP::solve(double currentValue, std::vector<double> dualVariables, std::vector<std::string> activeConstraintsRP, std::vector<IB_Column*>* inColumns, std::vector<int>* inColumnsIndices, int n_calls, int phase) {
-	//Construction du problème
+	//Construction du problï¿½me
 	IloEnv env;
 	IloModel mod(env);
 	IloNumVarArray vars(env);
@@ -20,7 +20,10 @@ bool IB_ReducedCP::solve(double currentValue, std::vector<double> dualVariables,
 	std::vector<int> colsIndices;
 
 	
-
+	if(verbose_level>=1){
+		std::cout<<"    Solving reduced complementary problem"<<std::endl;
+	}
+	
 	IloRangeArray constraints(env, psolutionMethod_->tasks_.size() + 1, 0, 0);
 	constraints[psolutionMethod_->tasks_.size()].setBounds(1, 1);
 	
@@ -110,7 +113,9 @@ bool IB_ReducedCP::solve(double currentValue, std::vector<double> dualVariables,
 
 
 
-	std::cout << vars.getSize() << " variables in phase " << phase << std::endl;
+	if(verbose_level>=2){
+		std::cout <<"      "<< vars.getSize() << " variables in phase " << phase << std::endl;
+	}
 	IloCplex cplex(mod);
 	cplex.setParam(IloCplex::Param::Simplex::Display, 0);
 	cplex.setParam(IloCplex::Param::Preprocessing::Presolve, 0);
@@ -123,7 +128,6 @@ bool IB_ReducedCP::solve(double currentValue, std::vector<double> dualVariables,
 		IloNumArray vals(env);
 		bool success = cplex.solve();
 		if (!success || cplex.getObjValue() >= 0 || fabs(cplex.getObjValue() * psolutionMethod_->sum_bi) / currentValue <= 0.1) { 
-			//std::cout << "Le succes est : " <<  (success ? cplex.getObjValue() : -1) << std::endl;
 			return (inColumns->size() != 0);
 		}
 
@@ -148,8 +152,8 @@ bool IB_ReducedCP::solve(double currentValue, std::vector<double> dualVariables,
 				}
 
 			}
-			else {
-				std::cout << "Artificial variable value : " << vals[j] << std::endl;
+			else if(verbose_level>=2) {
+				std::cout << "      Artificial variable value : " << vals[j] << std::endl;
 			}
 		}
 
@@ -168,17 +172,7 @@ bool IB_ReducedCP::solve(double currentValue, std::vector<double> dualVariables,
 				n2 += 1;
 			}
 		}
-
-		std::cout << n2 << " variables put to 0" << std::endl;
-		//Suppression des contraintes
-		for (auto task : coveredTasks) {
-			//mod.remove(constraints[constraintsIds[task]]);
-		}
-
-		std::cout << sum << std::endl;
 	}
 		env.end();
-
-
 		return true;
 	}

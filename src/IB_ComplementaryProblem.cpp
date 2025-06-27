@@ -198,12 +198,14 @@ double IB_ComplementaryProblem::solve(std::vector<double>* solution, std::vector
 		main_cplex.setOut(env.getNullStream());
 		bool success = main_cplex.solve();
 
-		if(verbose_level>=1){
-			std::cout << "      CP Solved" << std::endl;
-		}
+
 		double objective;
 		std::set<std::string> coveredTasks;
 		if (success) {
+			if(verbose_level>=1){
+			std::cout << "      CP Success" << std::endl;
+			}
+			
 			IloNumArray vals(env);
 			main_cplex.getValues(vars, vals);
 			if(duals != NULL) {

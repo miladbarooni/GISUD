@@ -142,7 +142,6 @@ bool IncompatibilityDegree::constructGraph(IB_Column* column, std::unordered_map
 
 	tasks_pairs.push_back("T");
 
-	//std::cout << "Before tasks pairs" << std::endl;
 	for (auto task_pair : tasks_pairs) {
 		std::vector < std::pair < std::string, std::string > > new_nodes;
 		if (task_pair == "T") {
@@ -158,7 +157,6 @@ bool IncompatibilityDegree::constructGraph(IB_Column* column, std::unordered_map
 		for (auto previous_node : previous_nodes) {
 			for (auto new_node : new_nodes) {
 				int d = 0;
-				//std::cout << "New node : " << new_node.first << ", " << new_node.second;
 				if (new_node.first != "T") {
 					std::string new_column = new_node.second;
 
@@ -176,7 +174,6 @@ bool IncompatibilityDegree::constructGraph(IB_Column* column, std::unordered_map
 					}
 				}
 
-				//std::cout << "Length put on arcs" << std::endl;
 
 				int first_node = getNode(previous_node.first, previous_node.second);
 				int second_node = getNode(new_node.first, new_node.second);
@@ -185,13 +182,11 @@ bool IncompatibilityDegree::constructGraph(IB_Column* column, std::unordered_map
 				}
 
 				edges[first_node].push_back(std::pair < int, int >(second_node, d));
-				//std::cout << "Edges added" << std::endl;
 			}
 		}
 
 		previous_nodes = new_nodes;
 	}
-	//std::cout << "After tasks pairs." << std::endl;
 
 	return true;
 
@@ -203,9 +198,7 @@ bool IncompatibilityDegree::constructGraph(IB_Column* column, std::unordered_map
 // "involvedColumns" is the set of columns indices making the column "column" binary compatible
 int IncompatibilityDegree::getIncompatibilityDegree(IB_Column* column, std::unordered_map < std::string, int >* contribsOut, std::set<std::string>* involvedColumns) {
 	emptyGraph();
-	//std::cout << "Graph construction" << std::endl;
 	bool graphConstructed = constructGraph(column, contribsOut);
-	//std::cout << "Graph constructed" << std::endl;
 	if (!graphConstructed) {
 		return 6;
 	}

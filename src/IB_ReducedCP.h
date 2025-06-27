@@ -18,6 +18,13 @@ private:
 	// Columns positive indices in the CP
 	std::set<int> activePColumns_;
 
+	
+	//verbose level
+	// 0 no print
+	// 1 basic info
+	// 2 detailed info
+	//
+	int verbose_level = 2;
 
 
 public:

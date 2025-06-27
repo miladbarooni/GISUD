@@ -54,7 +54,7 @@ private:
 	// 1 basic info
 	// 2 detailed info
 	//
-	int verbose_level = 2;
+	int verbose_level = 1;
 
 
 public:

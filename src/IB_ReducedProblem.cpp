@@ -51,7 +51,6 @@ double IB_ReducedProblem::solveProblem(std::vector<int>& currentSolution, std::v
 		}
 	}
 
-	std::cout<<"  "<<activeConstraints_.size()<<" contraintes actives"<<std::endl;
 
 	std::map<std::string, int> tasksIndexes;
 	for (int i = 0; i < activeConstraints_.size(); i++) {
@@ -63,8 +62,6 @@ double IB_ReducedProblem::solveProblem(std::vector<int>& currentSolution, std::v
 	// Definition des contraintes
 	IloRangeArray constraints(env, activeConstraints_.size(),  0, 0);
 	
-	if(verbose_level>=2){std::cout << activeConstraints_.size() << " " << constraintsIds.size() << " contraintes" << std::endl;}
-
 	for (int i = 0; i < activeConstraints_.size(); i++) {
 		constraints[i].setBounds(psolutionMethod_->rhs_[constraintsIds[i]], psolutionMethod_->rhs_[constraintsIds[i]]);
 		mod.add(constraints);

@@ -17,7 +17,6 @@ void perturbateFinalSolution(ISUD_Base* problem, double percentage) {
         }
     }
 
-    std::cout << "Maximal cost : " << max_cost << std::endl;
     double remaining_percent = 1;
     int ac_number = 1;
     while (remaining_percent > percentage) {
