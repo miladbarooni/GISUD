@@ -122,7 +122,7 @@ double IB_ComplementaryProblem::solve(std::vector<double>* solution, std::vector
 	
 	
 	
-	if(verbose_level>=1){
+	if(verbose_level>=2){
 		std::cout << "      "<<vars.getSize() << " variables in the CP." << std::endl;
 	}
 	// Solving the complementary problem

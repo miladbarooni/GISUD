@@ -106,7 +106,7 @@ double IB_ReducedProblem::solveProblem(std::vector<int>& currentSolution, std::v
 		}
 	}
 	
-	if(verbose_level>=2){std::cout << vars.getSize() << " variables in RP" << std::endl;}
+	if(verbose_level>=2){std::cout <<"      " <<vars.getSize() << " variables in RP" << std::endl;}
 
 	// R�solution du probl�me
 	IloCplex cplex(mod);
@@ -215,7 +215,7 @@ double IB_ReducedProblem::getDuals(std::vector<double>* duals) {
 		}
 	}
 
-	if(verbose_level>=1){
+	if(verbose_level>=2){
 		std::cout <<"      "<< vars.getSize() << " variables" << std::endl;
 	}
 	// R�solution du probl�me

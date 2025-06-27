@@ -78,17 +78,17 @@ ISUD::ISUD(ISUD_Base *problem, std::string path, bool addColumns, bool checkBina
 	{
 		if (compete)
 		{
-			final_path = path + "/sortie_isud_compete.txt";
-			compete_out_filename = path + (addColumns_ ? "/competition.txt" : "/competition_dis.txt");
+			final_path = path + "/isud_compete.out";
+			compete_out_filename = path + (addColumns_ ? "/competition.out" : "/competition_dis.out");
 		}
 		else
 		{
-			final_path = path + "/sortie_isud.txt";
+			final_path = path + "/isud.out";
 		}
 	}
 	else
 	{
-		final_path = path + "/sortie_zoom.txt";
+		final_path = path + "/zoom.out";
 	}
 
 	currentCost_ = problem->fixed_cost_;
@@ -857,7 +857,7 @@ bool ISUD::zoom(int isudPhase, std::vector<double> &solution, std::vector<int> *
 			std::vector<int> colsToAddIndices;
 
 			if(verbose_level>=1){
-				std::cout << "Solving reduced CP in phase : " << phase << std::endl;
+				std::cout << "    Solving reduced CP in phase : " << phase << std::endl;
 			}
 
 			cpSuccess = reducedCP.solve(currentCost_, dualVariables, activeConstraintsRP, &colsToAdd, &colsToAddIndices, 3, phase);
@@ -938,7 +938,7 @@ std::pair<bool, int> ISUD::cpWithArtificialColumn(int acolId, std::set<int> cols
 		}
 	}
 	if(verbose_level>=1){
-		std::cout << "Column addition : " << psolutionMethod_->columns_[acolId]->getName() << std::endl;
+		std::cout << "    Column addition : " << psolutionMethod_->columns_[acolId]->getName() << std::endl;
 	}
 	psolutionMethod_->columns_[acolId]->setInCurrentSolution();
 
