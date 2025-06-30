@@ -4,6 +4,7 @@ COMPILATION
 
 Code written in C++. Dependencies are CPLEX 20.1 and Eigen 3.4.0 (for linear algebra) : https://eigen.tuxfamily.org/index.php
 
+A makefile is provided.
 
 
 RUN
