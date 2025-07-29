@@ -17,6 +17,7 @@
 // Main function
 int main(int argc, char* argv[])
 {
+    std::cout << "Hello" << std::endl;
     std::string path = argv[1];
 
     bool cplex = strcmp(argv[2], "1")==0;
