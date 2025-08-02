@@ -94,7 +94,7 @@ public:
 	bool getBCompatibleColumnId(std::vector<int>* colsIn, std::vector<int>* colsOut);
 
 	// Main procedure of ISUD, solve the problem and stock the output to path
-	void solve(std::string path = "");
+	void solve(std::vector<double> & duals, std::string path = "");
 
 	// Pivot columns "colsIn", "colsOut" in the solution, recompute compatibilities if recomputeCompatibilities is true
 	void pivotColumnsInSolution(std::vector<int>& colsIn, std::vector<int>& colsOut, bool recompute = true);

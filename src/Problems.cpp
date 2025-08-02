@@ -174,3 +174,20 @@ ISUD_Base generateProblemFromMps(std::string mps_file, std::string rhs_file, std
 
     return ISUD_Base(tasks, rhs, final_columns, fixed_cost);
 }
+
+void writeDualsToFile(const std::vector<double>& duals, const std::string& path) {
+    std::ofstream file(path);
+    if (!file.is_open()){
+        std::cerr << "Error opening file " << path << std::endl;
+        return;
+    }
+
+    file << "constraint# dual_variable" << std::endl;
+
+    for (size_t i = 0; i < duals.size(); ++i) {
+        file << (i + 1) << " " << duals[i] << std::endl;
+    }
+
+    file.close();
+    std::cout << "Duals written to " << path << std::endl;
+}

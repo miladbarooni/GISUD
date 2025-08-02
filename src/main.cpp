@@ -37,7 +37,9 @@ int main(int argc, char* argv[])
 
         ISUD isud(&problem, path, colAdd, false, compete);
         std::vector<int> initialSolution = isud.getCurrentSolution();
-        isud.solve(path);
+        std::vector<double> duals;
+        isud.solve(duals, path);
+        writeDualsToFile(duals, path+"/duals.txt");
         problem.destroyColumns();
     } 
     // Solve using CPLEX

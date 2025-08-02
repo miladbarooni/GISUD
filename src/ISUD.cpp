@@ -1000,6 +1000,7 @@ std::pair<bool, int> ISUD::cpWithArtificialColumn(int acolId, std::set<int> cols
 		}
 		cp.constructProblem(true, previous_objective * (support.size() + 200));
 		objective = cp.solve(&solution);
+
 		cp.destroy();
 
 		bool good_objective = objective < -1e-3;
@@ -1251,7 +1252,7 @@ void ISUD::writeTraceHeader(){
 }
 
 // Main procedure of ISUD, solve the problem and stock the output to "path"
-void ISUD::solve(std::string path)
+void ISUD::solve( std::vector<double> &duals, std::string path)
 {
 	std::cout << psolutionMethod_->columns_.size() << " columns." << std::endl;
 	std::cout << psolutionMethod_->tasks_.size() << " tasks." << std::endl;
@@ -1424,7 +1425,7 @@ void ISUD::solve(std::string path)
 		std::vector<double> solution;
 
 		double pastCost = currentCost_;
-		std::vector<double> duals;
+		// std::vector<double> duals;
 		for (int i = 0; i < phaseSeq.size(); i++)
 		{
 			if (skipPhase && (phaseSeq[i] != -1 && phaseSeq[i] <= previousPhaseMax))

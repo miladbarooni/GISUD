@@ -15,3 +15,4 @@
 // "initial_solution_file" is the initial solution path
 // "fixed_cost_file" is the fixed cost file
 ISUD_Base generateProblemFromMps(std::string mps_file, std::string rhs_file, std::string initial_solution_file = "", std::string fixed_cost_file = "");
+void writeDualsToFile(const std::vector<double>& duals, const std::string& filename);
